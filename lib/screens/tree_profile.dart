@@ -12,33 +12,84 @@ class _TreeProfileState extends State<TreeProfile> {
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color.fromARGB(255, 44, 81, 46),
+        ),
+        title: Text(
+          "Tree Profile",
+          style: TextStyle(
+            fontSize: 25,
+            color: Color.fromARGB(255, 44, 81, 46),
+          ),
+        ),
+      ),
       body: SafeArea(
           child: Container(
               width: double.infinity,
               child: Column(
                 children: [
-                  Text("Tree Profile"),
                   Container(
-                    height: w - 60,
-                    width: w - 60,
+                    height: w - 40,
+                    width: w - 40,
                     color: Colors.blueGrey,
                   ),
-                  Text("Name - HEHE"),
-                  Text("exists on db since 1 November, 2022"),
-                  Text("Status - Adopted"),
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Name - HEHE",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Text("latitude: 69, longitude: 69"),
+                          Text(
+                            "Status - Adopted",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   MaterialButton(
                     onPressed: () {
                       showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
                                 content: Container(
-                                  child: Text("hehe"),
-                                ),
+                                    height: 250,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      children: [
+                                        Text(
+                                            "You agree to-\n1. Take care of the tree throughout.\n2. Protect it from animals and miscreants.\n3. Drop adoption if you feel like you're not able to give enough time"),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        MaterialButton(
+                                          onPressed: () {},
+                                          child: Text("Confirm Adoption"),
+                                          height: 50,
+                                          minWidth: 200,
+                                          color: Colors.green,
+                                        ),
+                                      ],
+                                    )),
                               ));
                     },
                     child: Text("Adopt"),
                     height: 50,
-                    minWidth: w - 60,
+                    minWidth: w - 40,
                     color: Colors.green,
                   ),
                 ],

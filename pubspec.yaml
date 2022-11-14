@@ -39,6 +39,7 @@ dependencies:
   google_fonts: ^3.0.1
   image_picker: 
   cloud_firestore:
+  google_maps_flutter:
 
 dev_dependencies:
   flutter_test:

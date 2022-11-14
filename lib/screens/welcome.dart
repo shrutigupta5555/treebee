@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:treebee/screens/check_map.dart';
 import 'package:treebee/screens/login.dart';
 import 'package:treebee/screens/signup.dart';
 import 'package:treebee/screens/tree_map.dart';
@@ -66,7 +67,7 @@ class _WelcomeState extends State<Welcome> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: ((context) => TreeMap())));
+                                builder: ((context) => MapSample())));
                       },
                       child: Text(
                         "View Tree Map",

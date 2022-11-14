@@ -14,6 +14,37 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  var adoptedTrees = [
+    {
+      "id": "123",
+      "name": "aamkash",
+      "photo": "",
+      "status": "not adopted",
+      "latlong": [],
+    },
+    {
+      "id": "123",
+      "name": "aamkash",
+      "photo": "",
+      "status": "not adopted",
+      "latlong": [],
+    },
+    {
+      "id": "123",
+      "name": "aamkash",
+      "photo": "",
+      "status": "not adopted",
+      "latlong": [],
+    },
+    {
+      "id": "123",
+      "name": "aamkash",
+      "photo": "",
+      "status": "not adopted",
+      "latlong": [],
+    }
+  ];
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -21,7 +52,19 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Home"),
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: IconThemeData(
+            color: Color.fromARGB(255, 44, 81, 46),
+          ),
+          title: Text(
+            "Home",
+            style: TextStyle(
+              fontSize: 25,
+              color: Color.fromARGB(255, 44, 81, 46),
+            ),
+          ),
           actions: [
             IconButton(
                 onPressed: () {
@@ -55,14 +98,52 @@ class _HomeState extends State<Home> {
                 width: w - 40,
                 color: Colors.pink,
               ),
-              InkWell(
-                  child: Text("Your Adopted Trees"),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: ((context) => TreeProfile())));
-                  })
+              SizedBox(
+                height: 15,
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Your Adopted Trees",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                height: adoptedTrees.length * 60,
+                child: ListView.builder(
+                    itemCount: adoptedTrees.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10),
+                          child: ListTile(
+                              leading: const Icon(
+                                Icons.nature_people,
+                                color: Colors.green,
+                              ),
+                              trailing: GestureDetector(
+                                child: Text(
+                                  "open profile",
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 15),
+                                ),
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: ((context) =>
+                                              TreeProfile())));
+                                },
+                              ),
+                              title: Text(
+                                  adoptedTrees[index]["name"].toString())));
+                    }),
+              ),
             ],
           ),
         )));
