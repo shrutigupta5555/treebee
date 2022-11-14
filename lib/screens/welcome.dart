@@ -61,22 +61,22 @@ class _WelcomeState extends State<Welcome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    MaterialButton(
-                      minWidth: 170,
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: ((context) => MapSample())));
-                      },
-                      child: Text(
-                        "View Tree Map",
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 50, 93, 51),
-                            fontSize: 18),
-                      ),
-                      color: Colors.white,
-                    ),
+                    // MaterialButton(
+                    //   minWidth: 170,
+                    //   onPressed: () {
+                    //     Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //             builder: ((context) => MapSample())));
+                    //   },
+                    //   child: Text(
+                    //     "View Tree Map",
+                    //     style: TextStyle(
+                    //         color: Color.fromARGB(255, 50, 93, 51),
+                    //         fontSize: 18),
+                    //   ),
+                    //   color: Colors.white,
+                    // ),
                     MaterialButton(
                       minWidth: 170,
                       onPressed: () {

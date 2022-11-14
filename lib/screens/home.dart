@@ -40,7 +40,12 @@ class _HomeState extends State<Home> {
   void initState() {
     _getCurrentPosition();
     getAdoptedTrees();
+    rootBundle.loadString('assets/images/map-styles.txt').then((string) {
+      _mapStyle = string;
+    });
   }
+
+  late String _mapStyle;
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -206,6 +211,7 @@ class _HomeState extends State<Home> {
                   ),
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
+                    controller.setMapStyle(_mapStyle);
                   },
                   markers: markers,
                 ),
@@ -229,7 +235,7 @@ class _HomeState extends State<Home> {
               Container(
                 height: userAdoptedTrees.length * 60,
                 child: ListView.builder(
-                    itemCount: adoptedTrees.length,
+                    itemCount: userAdoptedTrees.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Padding(
                           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -246,7 +252,7 @@ class _HomeState extends State<Home> {
                                 ),
                                 onTap: () async {
                                   setState(() {
-                                    currentTree = adoptedTrees[index]["id"];
+                                    currentTree = userAdoptedTrees[index]["id"];
                                   });
                                   Navigator.push(
                                       context,
