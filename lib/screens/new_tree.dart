@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -86,6 +88,8 @@ class _NewTreeState extends State<NewTree> {
   }
 
   void addTree() {
+    var x = String.fromCharCodes(
+        List.generate(8, (index) => Random().nextInt(33) + 89));
     // Call the user's CollectionReference to add a new user
     _getCurrentPosition().then((value) {
       final data = {
@@ -93,9 +97,11 @@ class _NewTreeState extends State<NewTree> {
         "lat": _currentPosition?.latitude,
         "long": _currentPosition?.longitude,
         "created_by": FirebaseAuth.instance.currentUser?.email,
-        "status": 0
+        "status": 0,
+        "id": x,
       };
-      trees.add(data).then((value) {
+
+      trees.doc(x).set(data).then((value) {
         Navigator.push(
             context, MaterialPageRoute(builder: ((context) => Home())));
       }).catchError((error) => print("Failed to add user: $error"));
@@ -142,16 +148,7 @@ class _NewTreeState extends State<NewTree> {
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.menu_outlined),
-                    alignment: Alignment.topLeft,
-                    color: Colors.black,
-                    onPressed: () {
-                      drawer();
-                    },
-                  ),
-                ],
+                children: <Widget>[],
               ),
             ),
             Column(
@@ -170,14 +167,7 @@ class _NewTreeState extends State<NewTree> {
                           margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Color.fromRGBO(25, 29, 49, 1),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              colors: <Color>[
-                                Color(0xffEB271A),
-                                Color(0xffFF7A00),
-                              ],
-                            ),
+                            color: Color.fromARGB(255, 44, 81, 46),
                           ),
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
@@ -202,13 +192,7 @@ class _NewTreeState extends State<NewTree> {
                           margin: EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              colors: <Color>[
-                                Color(0xffEB271A),
-                                Color(0xffFF7A00),
-                              ],
-                            ),
+                            color: Color.fromARGB(255, 44, 81, 46),
                           ),
                           child: Padding(
                             padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
@@ -241,7 +225,9 @@ class _NewTreeState extends State<NewTree> {
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: MaterialButton(
-                          color: Color(0xffEB271A),
+                          minWidth: 150,
+                          height: 50,
+                          color: Color.fromARGB(255, 44, 81, 46),
                           padding: EdgeInsets.all(10),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),

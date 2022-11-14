@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +13,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:treebee/main.dart';
 import 'package:treebee/screens/new_tree.dart';
 import 'package:treebee/screens/tree_profile.dart';
+import 'dart:ui' as ui;
+
+String currentTree = "";
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -85,40 +91,60 @@ class _HomeState extends State<Home> {
 
   void getAdoptedTrees() async {
     var x = await FirebaseFirestore.instance.collection("trees").get();
-    var y = List.from(x.docs);
-    print(y);
+    var y = x.docs.map((doc) => doc.data()).toList();
+    var email = FirebaseAuth.instance.currentUser!.email;
+    log(email.toString());
+    print("hehe");
+
+    setState(() {
+      adoptedTrees = y;
+      userAdoptedTrees =
+          y.where((score) => score["created_by"] == email).toList();
+    });
+
+    addMarkers(y);
+    // log(y.toString());
   }
 
-  var adoptedTrees = [
-    {
-      "id": "123",
-      "name": "aamkash",
-      "photo": "",
-      "status": "not adopted",
-      "latlong": [],
-    },
-    {
-      "id": "123",
-      "name": "aamkash",
-      "photo": "",
-      "status": "not adopted",
-      "latlong": [],
-    },
-    {
-      "id": "123",
-      "name": "aamkash",
-      "photo": "",
-      "status": "not adopted",
-      "latlong": [],
-    },
-    {
-      "id": "123",
-      "name": "aamkash",
-      "photo": "",
-      "status": "not adopted",
-      "latlong": [],
+  var adoptedTrees = [];
+  var userAdoptedTrees = [];
+
+  void addMarkers(hehe) async {
+    for (var element in hehe) {
+      log(element["status"].toString());
+      log((element["status"] == 0).toString());
+      Uint8List markerIcon = await getBytesFromAsset(
+          element["status"] != 0
+              ? 'assets/images/normal.png'
+              : 'assets/images/autumn.png',
+          100);
+      markers.add(Marker(
+          onTap: () {
+            setState(() {
+              currentTree = element["id"];
+            });
+
+            Navigator.push(context,
+                MaterialPageRoute(builder: ((context) => TreeProfile())));
+          },
+          markerId: MarkerId(element["id"]),
+          // markerId: element["id"],
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+          position: LatLng(element["lat"], element["long"])));
     }
-  ];
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
+  }
+
+  final Set<Marker> markers = Set(); //markers for google map
 
   @override
   Widget build(BuildContext context) {
@@ -176,11 +202,12 @@ class _HomeState extends State<Home> {
                   initialCameraPosition: CameraPosition(
                     target: LatLng(_currentPosition!.latitude,
                         _currentPosition!.longitude),
-                    zoom: 14.4746,
+                    zoom: 1,
                   ),
                   onMapCreated: (GoogleMapController controller) {
                     _controller.complete(controller);
                   },
+                  markers: markers,
                 ),
               ),
               SizedBox(
@@ -200,7 +227,7 @@ class _HomeState extends State<Home> {
                 height: 10,
               ),
               Container(
-                height: adoptedTrees.length * 60,
+                height: userAdoptedTrees.length * 60,
                 child: ListView.builder(
                     itemCount: adoptedTrees.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -217,7 +244,10 @@ class _HomeState extends State<Home> {
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 15),
                                 ),
-                                onTap: () {
+                                onTap: () async {
+                                  setState(() {
+                                    currentTree = adoptedTrees[index]["id"];
+                                  });
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(
