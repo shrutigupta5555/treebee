@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,7 +17,8 @@ class NewTree extends StatefulWidget {
 }
 
 class _NewTreeState extends State<NewTree> {
-  String? name, lat, long, created_by;
+  String? name, lat, long, created_by, downloadUrl;
+
   int status = 0;
   XFile? _image;
   Position? _currentPosition;
@@ -91,7 +94,15 @@ class _NewTreeState extends State<NewTree> {
     var x = String.fromCharCodes(
         List.generate(8, (index) => Random().nextInt(33) + 89));
     // Call the user's CollectionReference to add a new user
+    final storageRef = FirebaseStorage.instance.ref();
+    final mountainImagesRef = storageRef.child("$x.jpg");
     _getCurrentPosition().then((value) {
+      mountainImagesRef.putFile(File(_image!.path));
+    }).then((value) {
+      mountainImagesRef.getDownloadURL().then((value) {
+        print("---------------uuu");
+        print(value);
+      });
       final data = {
         "name": name,
         "lat": _currentPosition?.latitude,
@@ -99,6 +110,7 @@ class _NewTreeState extends State<NewTree> {
         "created_by": FirebaseAuth.instance.currentUser?.email,
         "status": 0,
         "id": x,
+        // "url": d
       };
 
       trees.doc(x).set(data).then((value) {

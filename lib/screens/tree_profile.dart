@@ -55,9 +55,7 @@ class _TreeProfileState extends State<TreeProfile> {
                     width: w - 40,
                     decoration: BoxDecoration(
                         image: DecorationImage(
-                            image: NetworkImage(
-                              "https://images.hindustantimes.com/rf/image_size_630x354/HT/p2/2017/04/10/Pictures/_f5c4f41e-1dc7-11e7-89d6-c3c500e93e5a.jpg",
-                            ),
+                            image: NetworkImage(treedata!['url']),
                             fit: BoxFit.cover)),
                   ),
                   Padding(
