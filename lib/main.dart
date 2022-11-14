@@ -4,7 +4,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:treebee/screens/home.dart';
 import 'package:treebee/screens/login.dart';
+import 'package:treebee/screens/welcome.dart';
 
+// import 'firebase_options.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -25,7 +27,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    String appName = "Lights Up";
+    String appName = "Treebee";
     return MaterialApp(
       theme: ThemeData(textTheme: GoogleFonts.poppinsTextTheme()),
       title: appName,
@@ -39,6 +41,7 @@ decide() {
   if (FirebaseAuth.instance.currentUser != null) {
     return Home();
   } else {
-    return Login();
+    // return Login();
+    return Welcome();
   }
 }
