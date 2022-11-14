@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "128120053459",
+    "project_id": "treebeeeeee",
+    "storage_bucket": "treebeeeeee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128120053459:android:85171b8e8aa5b1722e7e26",
+        "android_client_info": {
+          "package_name": "com.example.treebee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "128120053459-oehfgt3dv4ho94kntn6332quo0d6dloc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGN94HJaU5oYTTYENCghTh7MYWcQiBc_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "128120053459-oehfgt3dv4ho94kntn6332quo0d6dloc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
