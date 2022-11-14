@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
+import 'package:treebee/screens/home.dart';
 
 class NewTree extends StatefulWidget {
   @override
@@ -11,9 +13,13 @@ class NewTree extends StatefulWidget {
 }
 
 class _NewTreeState extends State<NewTree> {
-  String? place, date, time, total_slots;
+  String? name, lat, long, created_by;
+  int status = 0;
   XFile? _image;
+  Position? _currentPosition;
   final ImagePicker _picker = ImagePicker();
+  CollectionReference trees = FirebaseFirestore.instance.collection('trees');
+
   Widget drawer() {
     return Drawer();
   }
@@ -34,6 +40,65 @@ class _NewTreeState extends State<NewTree> {
 
     setState(() {
       _image = image;
+    });
+  }
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      print("----");
+      print(position);
+      setState(() => _currentPosition = position);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  void addTree() {
+    // Call the user's CollectionReference to add a new user
+    _getCurrentPosition().then((value) {
+      final data = {
+        "name": name,
+        "lat": _currentPosition?.latitude,
+        "long": _currentPosition?.longitude,
+        "created_by": FirebaseAuth.instance.currentUser?.email,
+        "status": 0
+      };
+      trees.add(data).then((value) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: ((context) => Home())));
+      }).catchError((error) => print("Failed to add user: $error"));
     });
   }
 
@@ -86,24 +151,13 @@ class _NewTreeState extends State<NewTree> {
                       drawer();
                     },
                   ),
-                  Text(
-                    'Food Indeed',
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  // Image.asset(
-                  //   "assets/logo.png",
-                  //   width: 62,
-                  //   height: 54,
-                  // )
                 ],
               ),
             ),
             Column(
               children: <Widget>[
                 Text(
-                  "Start Food Group",
+                  "Create a new tree",
                   style: TextStyle(
                     fontSize: 30,
                   ),
@@ -133,109 +187,15 @@ class _NewTreeState extends State<NewTree> {
                               style: GoogleFonts.poppins(
                                   color: Colors.white, fontSize: 16),
                               onChanged: (value) {
-                                place = value;
+                                name = value;
                               },
                               decoration: InputDecoration(
                                   enabledBorder: InputBorder.none,
                                   focusedBorder: InputBorder.none,
                                   disabledBorder: InputBorder.none,
-                                  hintText: "Place",
+                                  hintText: "name",
                                   hintStyle: TextStyle(
                                       fontSize: 15, color: Colors.white)),
-                            ),
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              colors: <Color>[
-                                Color(0xffEB271A),
-                                Color(0xffFF7A00),
-                              ],
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                            child: TextField(
-                              cursorColor: Colors.white,
-                              cursorHeight: 24,
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 16),
-                              onChanged: (value) {
-                                date = value;
-                              },
-                              decoration: InputDecoration(
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  hintText: "Date",
-                                  hintStyle: TextStyle(
-                                      fontSize: 15, color: Colors.white)),
-                            ),
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              colors: <Color>[
-                                Color(0xffEB271A),
-                                Color(0xffFF7A00),
-                              ],
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                            child: TextField(
-                              cursorColor: Colors.white,
-                              cursorHeight: 24,
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 16),
-                              onChanged: (value) {
-                                time = value;
-                              },
-                              decoration: InputDecoration(
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                  disabledBorder: InputBorder.none,
-                                  hintText: "Time",
-                                  hintStyle: TextStyle(
-                                      fontSize: 15, color: Colors.white)),
-                            ),
-                          )),
-                      Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              colors: <Color>[
-                                Color(0xffEB271A),
-                                Color(0xffFF7A00),
-                              ],
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
-                            child: TextField(
-                              cursorColor: Colors.white,
-                              cursorHeight: 24,
-                              style: GoogleFonts.poppins(
-                                  color: Colors.white, fontSize: 16),
-                              onChanged: (value) {
-                                total_slots = value;
-                              },
-                              decoration: InputDecoration(
-                                enabledBorder: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                hintText: "Total slots",
-                                hintStyle: TextStyle(
-                                    fontSize: 15, color: Colors.white),
-                              ),
                             ),
                           )),
                       Container(
@@ -286,7 +246,9 @@ class _NewTreeState extends State<NewTree> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            addTree();
+                          },
                           child: Text(
                             "Confirm",
                             style: TextStyle(color: Colors.white),
