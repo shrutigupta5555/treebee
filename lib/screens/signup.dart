@@ -28,7 +28,7 @@ class _SignupState extends State<Signup> {
             height: height,
             width: width,
             decoration:
-                const BoxDecoration(color: Color.fromRGBO(207, 223, 224, 1)),
+                const BoxDecoration(color: Color.fromARGB(255, 202, 244, 223)),
             child: Padding(
               padding: EdgeInsets.all(30),
               child: Column(
@@ -43,7 +43,7 @@ class _SignupState extends State<Signup> {
                       Text(
                         "Get Started",
                         style: TextStyle(
-                            fontSize: 35, fontWeight: FontWeight.w500),
+                            fontSize: 30, fontWeight: FontWeight.w500),
                       ),
                     ],
                   ),
@@ -110,8 +110,11 @@ class _SignupState extends State<Signup> {
                       MaterialButton(
                           height: 50,
                           minWidth: 200,
-                          color: Color.fromARGB(255, 235, 121, 93),
-                          child: Text("register"),
+                          color: Color.fromARGB(255, 44, 81, 46),
+                          child: Text(
+                            "register",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
                           onPressed: () async {
                             setState(() {
                               em = email;
@@ -148,15 +151,17 @@ class _SignupState extends State<Signup> {
                             });
                           }),
                       TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) => Login()));
-                        },
-                        child: Text(
-                          "Already have an acc? Sign in",
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      )
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => Login()));
+                          },
+                          child: Center(
+                            child: Text(
+                              "Already have an acc? Sign in",
+                              style:
+                                  TextStyle(fontSize: 18, color: Colors.black),
+                            ),
+                          ))
                     ],
                   ),
                   SizedBox(

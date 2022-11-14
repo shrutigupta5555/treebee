@@ -24,7 +24,7 @@ class _LoginState extends State<Login> {
         height: height,
         width: width,
         decoration:
-            const BoxDecoration(color: Color.fromRGBO(207, 223, 224, 1)),
+            const BoxDecoration(color: Color.fromARGB(255, 202, 244, 223)),
         child: Padding(
           padding: EdgeInsets.all(30),
           child: Column(
@@ -89,8 +89,11 @@ class _LoginState extends State<Login> {
                   MaterialButton(
                       height: 50,
                       minWidth: 200,
-                      color: Color.fromARGB(255, 235, 121, 93),
-                      child: Text("login"),
+                      color: Color.fromARGB(255, 44, 81, 46),
+                      child: Text(
+                        "login",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
+                      ),
                       onPressed: () async {
                         await FirebaseAuth.instance
                             .signInWithEmailAndPassword(
@@ -126,15 +129,16 @@ class _LoginState extends State<Login> {
                 height: 30,
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => Signup()));
-                },
-                child: Text(
-                  "Create a new account",
-                  style: TextStyle(fontSize: 25),
-                ),
-              )
+                  onPressed: () {
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Signup()));
+                  },
+                  child: Center(
+                    child: Text(
+                      "Create a new account",
+                      style: TextStyle(fontSize: 18, color: Colors.black),
+                    ),
+                  ))
             ],
           ),
         ),
